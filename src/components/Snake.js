@@ -8,7 +8,9 @@ function Snake(props) {
 
     let length = snakePoints.length
     return (
-        snakePoints.map((point, index) => {
+        snakePoints.map((point, index, arr) => {
+            // console.log(arr[index])
+
             switch (point.direction) {
                 case 'RIGHT': bgImage = setBGImage(index, length, [-16, -16], [-16, -48], [-16, 0])
                     break
@@ -19,7 +21,46 @@ function Snake(props) {
                 case 'DOWN': bgImage = setBGImage(index, length, [-32, -16], [0, -48], [-32, 0])
                     break
             }
-            return <SnakeItem
+
+
+            if (index > 0) {
+                let j = index - 1
+                if (point.direction == arr[j.direction]) {
+                    bgImage = setBGImage(index, length, [-48, -16], [-64, -64], [-48, 0])
+                }
+
+            }
+
+            if (index < arr.length - 1) {
+                let j = index + 1
+
+                if (point.direction !== arr[j].direction) {
+
+                    if (point.direction == 'LEFT' && arr[j].direction == 'DOWN')
+                        bgImage = setBGImage(index, length, [-48, -16], [-16, -32], [-48, 0])
+
+
+                    if ((point.direction == 'LEFT' && arr[j].direction == 'UP') ||
+                        (arr[j].direction == 'RIGHT' && point.direction === 'DOWN'))
+                        bgImage = setBGImage(index, length, [-48, -16], [0, -32], [-48, 0])
+
+                    if (arr[j].direction == 'DOWN' && point.direction == 'RIGHT')
+                        bgImage = setBGImage(index, length, [-48, -16], [-32, -32], [-48, 0])
+
+                    if ((arr[j].direction == 'UP' && point.direction === 'RIGHT') ||
+                        (arr[j].direction == 'LEFT' && point.direction == 'DOWN')) {
+                        bgImage = setBGImage(index, length, [-48, -16], [-48, -32], [-48, 0])
+                    }
+
+                    if (arr[j].direction == 'LEFT' && point.direction == 'UP')
+                        bgImage = setBGImage(index, length, [-48, -16], [-48, -16], [-48, 0])
+
+
+                    if (arr[j].direction == 'RIGHT' && point.direction === 'UP')
+                        bgImage = setBGImage(index, length, [-48, -16], [0, -16], [-48, 0])
+                }
+            }
+            return <SnakeItem key={index}
                 point={point}
                 bgImage={bgImage} />
         })

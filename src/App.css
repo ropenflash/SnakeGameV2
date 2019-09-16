@@ -41,3 +41,10 @@ body {
 .up {
   grid-column: 1/7;
 }
+
+@media screen and (max-width: 375px) {
+  .Arena {
+    height: 667px;
+    width: 375px;
+  }
+}

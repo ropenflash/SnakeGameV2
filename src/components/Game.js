@@ -20,10 +20,12 @@ export default class Game extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            snakePoints: [{ position: [0, 0], direction: 'RIGHT' }, { position: [16, 0], direction: 'RIGHT' }, { position: [32, 0], direction: 'RIGHT' }, { position: [48, 0], direction: 'RIGHT' }],
+            snakePoints: [{ position: [0, 0], direction: 'RIGHT' }, { position: [16, 0], direction: 'RIGHT' }, { position: [32, 0], direction: 'RIGHT' },
+            { position: [48, 0], direction: 'RIGHT' }, { position: [64, 0], direction: 'RIGHT' },
+            { position: [80, 0], direction: 'RIGHT' }],
             direction: 'RIGHT',
             distanceSpeed: 10,
-            interval: 2000,
+            interval: 500,
             intersections: [],
             foodPosition: generateRandomPosition(),
 
@@ -119,11 +121,13 @@ export default class Game extends React.Component {
     }
     render() {
         const { snakePoints, flipImage, intersections } = this.state
+        const { setArenaHeightWidth } = this
         return (<div className="Game">
             <Arena
                 snakePoints={snakePoints}
                 flipImage={flipImage}
                 intersections={intersections}
+                setArenaHeightWidth={setArenaHeightWidth}
             />
             <Control onClick={this.onKeyDown} />
         </div >
