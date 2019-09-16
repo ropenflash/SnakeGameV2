@@ -7,7 +7,7 @@ export default function SnakeItem(props) {
 
   let backgroundPosition = bgImage;
   let useImage = snakeImg;
-  if (point.direction === "UP") {
+  if (point.direction == "UP") {
     useImage = snakeImg2;
   }
   return (
