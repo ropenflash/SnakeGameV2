@@ -25,7 +25,7 @@ export default class Game extends React.Component {
             { position: [80, 0], direction: 'RIGHT' }],
             direction: 'RIGHT',
             distanceSpeed: 10,
-            interval: 500,
+            interval: 100,
             intersections: [],
             foodPosition: generateRandomPosition(),
 

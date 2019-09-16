@@ -51,7 +51,8 @@ function Snake(props) {
                         bgImage = setBGImage(index, length, [-32, -16], [-32, -32], [-48, 0])
 
                     if (arr[j].direction === 'UP' && point.direction === 'RIGHT') {
-                        bgImage = setBGImage(index, length, [-32, -32], [-48, -32], [-48, 0])
+
+                        bgImage = setBGImage(index, length, [-48, -32], [-48, -32], [-48, 0])
                     }
                     if (arr[j].direction === 'LEFT' && point.direction === 'DOWN') {
                         bgImage = setBGImage(index, length, [-48, -16], [-48, -32], [-48, 0])
