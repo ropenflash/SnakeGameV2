@@ -137,7 +137,10 @@ export default class Game extends React.Component {
     render() {
         const { snakePoints, flipImage, intersections, height, width } = this.state
 
-        return (<div className="Game">
+        return (<div style={{
+            height: `${height}px`,
+            width: `${width}px`
+        }} className="Game">
             <Arena
                 snakePoints={snakePoints}
                 flipImage={flipImage}
@@ -145,7 +148,9 @@ export default class Game extends React.Component {
                 height={height}
                 width={width}
             />
-            <Control onClick={this.onKeyDown} />
+            <Control
+                height={height}
+                onClick={this.onKeyDown} />
         </div >
         )
     }
