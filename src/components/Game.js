@@ -73,13 +73,15 @@ export default class Game extends React.Component {
                 break
 
             case 'UP':
-                newHead.position = [head.position[0], head.position[1] - 16]
+                let y = head.position[1] - 16
+                newHead.position = [head.position[0], y > 0 ? y : (height - 310 + y)]
                 newHead.direction = "UP"
                 this.changePosition(newHead)
                 break
 
             case 'LEFT':
-                newHead.position = [head.position[0] - 16, head.position[1]]
+                let x = head.position[0] - 16
+                newHead.position = [x > 0 ? x : (width + x), head.position[1]]
                 newHead.direction = "LEFT"
                 this.changePosition(newHead)
                 break
