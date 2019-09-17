@@ -1,17 +1,14 @@
 import React from 'react'
 import Snake from './Snake'
+import Food from './Food'
 
 
 
+class Arena extends React.Component {
 
-export default class Arena extends React.Component {
-    constructor(props) {
-        super(props)
-
-    }
     render() {
 
-        const { snakePoints, intersections, height, width } = this.props
+        const { snakePoints, intersections, height, width, foodPosition } = this.props
 
         return (<div id="arena"
             style={
@@ -21,9 +18,16 @@ export default class Arena extends React.Component {
                 }
             }
             className='Arena'>
+            <Food
+                foodPosition={foodPosition}
+            />
             <Snake
                 snakePoints={snakePoints}
                 intersections={intersections}
-            /></div>)
+            />
+
+        </div>)
     }
 }
+
+export default Arena

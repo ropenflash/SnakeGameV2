@@ -2,14 +2,12 @@ import React from 'react'
 import Arena from './Arena'
 import Control from './Control'
 
-let clientHeight
-let clientWidth
 
 function generateRandomPosition() {
-    let min = 100
-    let max = 900
-    min = Math.floor(((Math.random() * max - min) + min) / 2)
-    max = Math.floor(((Math.random() * max - min) + min) / 2)
+    let min = 96
+    let max = 320
+    // min = Math.floor(((Math.random() * max - min) + min) / 2)
+    // max = Math.floor(((Math.random() * max - min) + min) / 2)
 
     return [max, min]
     // return [0, 1]
@@ -67,33 +65,35 @@ export default class Game extends React.Component {
         switch (direction) {
 
             case 'RIGHT':
-                newHead.position = [(head.position[0] + 16) % (width - 10), head.position[1]]
+                newHead.position = [(head.position[0] + 16) % (width - 16), head.position[1]]
                 newHead.direction = "RIGHT"
                 this.changePosition(newHead)
                 break
 
             case 'UP':
                 let y = head.position[1] - 16
-                newHead.position = [head.position[0], y > 0 ? y : (height - 310 + y)]
+                newHead.position = [head.position[0], y > 0 ? y : (height - 320 + y)]
                 newHead.direction = "UP"
                 this.changePosition(newHead)
                 break
 
             case 'LEFT':
                 let x = head.position[0] - 16
-                newHead.position = [x > 0 ? x : (width + x), head.position[1]]
+                let newWidth = (Math.floor(width / 16)) * 16
+                let newX = x > 0 ? x : (newWidth + x)
+                newHead.position = [newX, head.position[1]]
                 newHead.direction = "LEFT"
                 this.changePosition(newHead)
                 break
 
             case 'DOWN':
-                newHead.position = [head.position[0], (head.position[1] + 16) % (height - 310)]
+                newHead.position = [head.position[0], (head.position[1] + 16) % (height - 320)]
                 newHead.direction = "DOWN"
                 this.changePosition(newHead)
                 break
 
         }
-        // this.checkIfEatsFood()
+        this.checkIfEatsFood()
     }
     changeDirection(newDirection) {
 
@@ -102,15 +102,15 @@ export default class Game extends React.Component {
 
     onKeyDown = (e, id) => {
         e = e || window.event
-
+        const oldDirection = this.state.direction
         switch (e.keyCode || id) {
-            case 37: this.changeDirection('LEFT')
+            case 37: if (oldDirection !== 'RIGHT') this.changeDirection('LEFT')
                 break
-            case 38: this.changeDirection('UP')
+            case 38: if (oldDirection !== 'DOWN') this.changeDirection('UP')
                 break
-            case 39: this.changeDirection('RIGHT')
+            case 39: if (oldDirection !== 'LEFT') this.changeDirection('RIGHT')
                 break
-            case 40: this.changeDirection('DOWN')
+            case 40: if (oldDirection !== 'UP') this.changeDirection('DOWN')
                 break
 
         }
@@ -122,20 +122,20 @@ export default class Game extends React.Component {
     }
 
     checkIfEatsFood() {
-        const { snakePosition, foodPosition } = this.state
-
-        let x = Math.abs(snakePosition[0] - foodPosition[0])
-        let y = Math.abs(snakePosition[1] - foodPosition[1])
+        const { snakePoints, foodPosition } = this.state
+        let head = snakePoints[snakePoints.length - 1].position
+        let x = Math.abs(head[0] - foodPosition[0])
+        let y = Math.abs(head[1] - foodPosition[1])
 
         if (x <= 10 && y <= 10) {
             // let newSnakelength = [...snakeLength, 1].sort()
             // this.setState({ snakeLength: newSnakelength })
-            // this.setState({ foodPosition: generateRandomPosition() })
+            this.setState({ foodPosition: generateRandomPosition() })
         }
 
     }
     render() {
-        const { snakePoints, flipImage, intersections, height, width } = this.state
+        const { snakePoints, flipImage, intersections, height, width, foodPosition } = this.state
 
         return (<div style={{
             height: `${height}px`,
@@ -145,6 +145,7 @@ export default class Game extends React.Component {
                 snakePoints={snakePoints}
                 flipImage={flipImage}
                 intersections={intersections}
+                foodPosition={foodPosition}
                 height={height}
                 width={width}
             />
