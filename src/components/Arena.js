@@ -11,9 +11,16 @@ export default class Arena extends React.Component {
     }
     render() {
 
-        const { snakePoints, intersections } = this.props
+        const { snakePoints, intersections, height, width } = this.props
 
-        return (<div id="arena" className='Arena'>
+        return (<div id="arena"
+            style={
+                {
+                    height: `${height - 300}px`,
+                    width: `${width - 10}px`
+                }
+            }
+            className='Arena'>
             <Snake
                 snakePoints={snakePoints}
                 intersections={intersections}

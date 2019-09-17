@@ -2,6 +2,9 @@ import React from 'react'
 import Arena from './Arena'
 import Control from './Control'
 
+let clientHeight
+let clientWidth
+
 function generateRandomPosition() {
     let min = 100
     let max = 900
@@ -28,16 +31,25 @@ export default class Game extends React.Component {
             interval: 100,
             intersections: [],
             foodPosition: generateRandomPosition(),
+            width: 0,
+            height: 0,
 
         }
         this.interval = null
+        this.clientHeight = 450
+        this.clientWidth = 1536
     }
     componentDidMount() {
         const { interval } = this.state
+        this.updateWindowDimensions()
+        window.addEventListener('resize', this.updateWindowDimensions)
         this.interval = setInterval(this.moveSnake, interval)
-        document.onKeyDown = this.onKeyDown
+        document.onkeydown = this.onKeyDown
 
 
+    }
+    updateWindowDimensions = () => {
+        this.setState({ height: window.innerHeight, width: window.innerWidth })
     }
     changePosition(newHead) {
         let snakePoints = [...this.state.snakePoints]
@@ -47,7 +59,7 @@ export default class Game extends React.Component {
     }
 
     moveSnake = () => {
-        const { direction } = this.state
+        const { direction, width, height } = this.state
         let snakePoints = [...this.state.snakePoints]
         let head = snakePoints[snakePoints.length - 1]
 
@@ -55,7 +67,7 @@ export default class Game extends React.Component {
         switch (direction) {
 
             case 'RIGHT':
-                newHead.position = [(head.position[0] + 16) % 1536, head.position[1]]
+                newHead.position = [(head.position[0] + 16) % (width - 10), head.position[1]]
                 newHead.direction = "RIGHT"
                 this.changePosition(newHead)
                 break
@@ -73,7 +85,7 @@ export default class Game extends React.Component {
                 break
 
             case 'DOWN':
-                newHead.position = [head.position[0], (head.position[1] + 16) % 448]
+                newHead.position = [head.position[0], (head.position[1] + 16) % (height - 310)]
                 newHead.direction = "DOWN"
                 this.changePosition(newHead)
                 break
@@ -104,6 +116,7 @@ export default class Game extends React.Component {
 
     componentWillUnmount() {
         clearInterval(this.interval)
+        window.removeEventListener('resize', this.updateWindowDimensions)
     }
 
     checkIfEatsFood() {
@@ -120,14 +133,15 @@ export default class Game extends React.Component {
 
     }
     render() {
-        const { snakePoints, flipImage, intersections } = this.state
-        const { setArenaHeightWidth } = this
+        const { snakePoints, flipImage, intersections, height, width } = this.state
+
         return (<div className="Game">
             <Arena
                 snakePoints={snakePoints}
                 flipImage={flipImage}
                 intersections={intersections}
-                setArenaHeightWidth={setArenaHeightWidth}
+                height={height}
+                width={width}
             />
             <Control onClick={this.onKeyDown} />
         </div >
