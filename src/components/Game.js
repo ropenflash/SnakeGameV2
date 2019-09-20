@@ -27,7 +27,7 @@ export default class Game extends React.Component {
             snakePoints: initialState,
             direction: 'RIGHT',
             distanceSpeed: 10,
-            interval: 600,
+            interval: 300,
             intersections: [],
             foodPosition: [0, 0],
             width: 0,
