@@ -17,16 +17,14 @@ function generateRandomPosition(max, min) {
 }
 
 
-
+const initialState = [{ position: [0, 0], direction: 'RIGHT' }, { position: [16, 0], direction: 'RIGHT' }]
 
 export default class Game extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            snakePoints: [{ position: [0, 0], direction: 'RIGHT' }, { position: [16, 0], direction: 'RIGHT' }, { position: [32, 0], direction: 'RIGHT' },
-            { position: [48, 0], direction: 'RIGHT' }, { position: [64, 0], direction: 'RIGHT' },
-            { position: [80, 0], direction: 'RIGHT' }],
+            snakePoints: initialState,
             direction: 'RIGHT',
             distanceSpeed: 10,
             interval: 100,
@@ -106,6 +104,7 @@ export default class Game extends React.Component {
 
         }
         this.checkIfEatsFood()
+        this.checkIfCollides()
     }
     changeDirection(newDirection) {
 
@@ -143,12 +142,28 @@ export default class Game extends React.Component {
         if (x === 0 && y === 0) {
             let newSnakePoints = [...snakePoints]
             let head = newSnakePoints[newSnakePoints.length - 1]
+            let tail = { position: [-16, -16], direction: this.state.direction }
             eatSound.setVolume(0.2).play()
-            newSnakePoints.unshift(head)
+            newSnakePoints.unshift(tail)
             this.setState({ snakePoints: newSnakePoints })
             this.setState({ foodPosition: generateRandomPosition(this.state.width, this.state.height - 320) })
         }
 
+    }
+    checkIfCollides() {
+        const { snakePoints } = this.state
+        let newSnakePoints = snakePoints.slice()
+        let head = snakePoints[snakePoints.length - 1]
+        newSnakePoints.pop()
+        console.log(head.position[0])
+        console.log(newSnakePoints)
+        newSnakePoints.forEach(point => {
+
+            if (point.position[0] === head.position[0] && point.position[1] == head.position[1]) {
+                alert('Game Over')
+                this.setState({ snakePoints: initialState, direction: 'RIGHT' })
+            }
+        })
     }
     render() {
         const { snakePoints, flipImage, intersections, height, width, foodPosition } = this.state
