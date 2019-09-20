@@ -14,8 +14,8 @@ export default function Food(props) {
                     height: "16px",
                     width: "16px",
                     backgroundImage: `url(${snakeImg})`,
-                    top: `${foodPosition[0]}px`,
-                    left: `${foodPosition[1]}px`,
+                    top: `${foodPosition[1]}px`,
+                    left: `${foodPosition[0]}px`,
                     backgroundPosition: `-32px -48px`
                 }}
             ></div>

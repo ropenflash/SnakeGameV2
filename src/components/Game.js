@@ -1,14 +1,17 @@
 import React from 'react'
 import Arena from './Arena'
 import Control from './Control'
+import UIfx from 'uifx'
+import EatSound from '../assets/eat.wav'
 
+const eatSound = new UIfx(EatSound)
 
-function generateRandomPosition() {
-    let min = 96
-    let max = 320
-    // min = Math.floor(((Math.random() * max - min) + min) / 2)
-    // max = Math.floor(((Math.random() * max - min) + min) / 2)
+function generateRandomPosition(max, min) {
 
+    min = Math.floor(((Math.random() * min - 0) + 16) / 2) * 2
+    max = Math.floor(((Math.random() * max - 0) + 16) / 2) * 2
+    min = (Math.floor(min / 16)) * 16
+    max = (Math.floor(max / 16)) * 16
     return [max, min]
     // return [0, 1]
 }
@@ -28,14 +31,13 @@ export default class Game extends React.Component {
             distanceSpeed: 10,
             interval: 100,
             intersections: [],
-            foodPosition: generateRandomPosition(),
+            foodPosition: [0, 0],
             width: 0,
             height: 0,
 
         }
         this.interval = null
-        this.clientHeight = 450
-        this.clientWidth = 1536
+
     }
     componentDidMount() {
         const { interval } = this.state
@@ -47,7 +49,10 @@ export default class Game extends React.Component {
 
     }
     updateWindowDimensions = () => {
-        this.setState({ height: window.innerHeight, width: window.innerWidth })
+        this.setState({ height: window.innerHeight, width: window.innerWidth }, () => {
+            this.setState({ foodPosition: generateRandomPosition(this.state.width, this.state.height - 320) })
+        })
+
     }
     changePosition(newHead) {
         let snakePoints = [...this.state.snakePoints]
@@ -60,34 +65,41 @@ export default class Game extends React.Component {
         const { direction, width, height } = this.state
         let snakePoints = [...this.state.snakePoints]
         let head = snakePoints[snakePoints.length - 1]
-
+        let newX
+        let newY
         let newHead = {}
         switch (direction) {
 
             case 'RIGHT':
-                newHead.position = [(head.position[0] + 16) % (width - 16), head.position[1]]
+                newX = (head.position[0] + 16) % (width - 16)
+                newX = (Math.floor(newX / 16)) * 16
+                newHead.position = [newX, head.position[1]]
                 newHead.direction = "RIGHT"
                 this.changePosition(newHead)
                 break
 
             case 'UP':
                 let y = head.position[1] - 16
-                newHead.position = [head.position[0], y > 0 ? y : (height - 320 + y)]
+                newY = y > 0 ? y : (height - 320 + y)
+                newY = (Math.floor(newY / 16)) * 16
+                newHead.position = [head.position[0], newY]
                 newHead.direction = "UP"
                 this.changePosition(newHead)
                 break
 
             case 'LEFT':
                 let x = head.position[0] - 16
-                let newWidth = (Math.floor(width / 16)) * 16
-                let newX = x > 0 ? x : (newWidth + x)
+                newX = x > 0 ? x : (width + x)
+                newX = (Math.floor(newX / 16)) * 16
                 newHead.position = [newX, head.position[1]]
                 newHead.direction = "LEFT"
                 this.changePosition(newHead)
                 break
 
             case 'DOWN':
-                newHead.position = [head.position[0], (head.position[1] + 16) % (height - 320)]
+                newY = (head.position[1] + 16) % (height - 320)
+                newY = (Math.floor(newY / 16)) * 16
+                newHead.position = [head.position[0], newY]
                 newHead.direction = "DOWN"
                 this.changePosition(newHead)
                 break
@@ -126,11 +138,15 @@ export default class Game extends React.Component {
         let head = snakePoints[snakePoints.length - 1].position
         let x = Math.abs(head[0] - foodPosition[0])
         let y = Math.abs(head[1] - foodPosition[1])
+        // console.log(x, y)
 
-        if (x <= 10 && y <= 10) {
-            // let newSnakelength = [...snakeLength, 1].sort()
-            // this.setState({ snakeLength: newSnakelength })
-            this.setState({ foodPosition: generateRandomPosition() })
+        if (x === 0 && y === 0) {
+            let newSnakePoints = [...snakePoints]
+            let head = newSnakePoints[newSnakePoints.length - 1]
+            eatSound.setVolume(0.2).play()
+            newSnakePoints.unshift(head)
+            this.setState({ snakePoints: newSnakePoints })
+            this.setState({ foodPosition: generateRandomPosition(this.state.width, this.state.height - 320) })
         }
 
     }
