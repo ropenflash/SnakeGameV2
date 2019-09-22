@@ -42,14 +42,46 @@ export default class Game extends React.Component {
         this.updateWindowDimensions()
         window.addEventListener('resize', this.updateWindowDimensions)
         this.interval = setInterval(this.moveSnake, interval)
-        var eat = document.createElement('audio')
-        eat.src = EatSound
-        eat.id = 'eat'
-        document.body.appendChild(eat)
+        this.addAudio()
+        this.setTouchEvents()
         document.onkeydown = this.onKeyDown
 
 
 
+    }
+    setTouchEvents() {
+        const arena = document.getElementById('arena')
+        arena.addEventListener('touchstart', handleArenaTouch.bind(this))
+
+
+        function handleArenaTouch(e) {
+            const touch = e.touches[0]
+            const { direction: oldDirection, snakePoints } = this.state
+            let head = snakePoints[snakePoints.length - 1].position
+
+            if (oldDirection === 'RIGHT' || oldDirection === "LEFT") {
+                if (touch.pageY > head[1]) {
+                    this.changeDirection('DOWN')
+                }
+                else {
+                    this.changeDirection('UP')
+                }
+            }
+            if (oldDirection === 'UP' || oldDirection === "DOWN") {
+                if (touch.pageX > head[0]) {
+                    this.changeDirection('RIGHT')
+                }
+                else {
+                    this.changeDirection('LEFT')
+                }
+            }
+        }
+    }
+    addAudio() {
+        var eat = document.createElement('audio')
+        eat.src = EatSound
+        eat.id = 'eat'
+        document.body.appendChild(eat)
     }
     updateWindowDimensions = () => {
         this.setState({ height: window.innerHeight, width: window.innerWidth }, () => {
