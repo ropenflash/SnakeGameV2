@@ -5,7 +5,26 @@ import Food from './Food'
 
 
 class Arena extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+    componentDidMount() {
+        const arena = document.getElementById('arena')
+        arena.addEventListener('touchstart', (e) => {
+            e.preventDefault()
+            var touch = e.touches[0]
+            if (touch.pageY > 200 && touch.pageX > 200) {
+                this.updateDirection('DOWN')
+            }
+            if (touch.pageY < 200 && touch.pageX < 200) {
+                this.updateDirection('UP')
+            }
+        })
+    }
 
+    updateDirection(direction) {
+        this.props.changeDirection(direction)
+    }
     render() {
 
         const { snakePoints, intersections, height, width, foodPosition } = this.props

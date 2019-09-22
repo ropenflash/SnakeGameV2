@@ -2,7 +2,7 @@ import React from 'react'
 import Arena from './Arena'
 import Control from './Control'
 import UIfx from 'uifx'
-import EatSound from '../assets/eat.wav'
+import EatSound from '../assets/eat.mp3'
 
 const eatSound = new UIfx(EatSound)
 
@@ -42,7 +42,12 @@ export default class Game extends React.Component {
         this.updateWindowDimensions()
         window.addEventListener('resize', this.updateWindowDimensions)
         this.interval = setInterval(this.moveSnake, interval)
+        var eat = document.createElement('audio')
+        eat.src = EatSound
+        eat.id = 'eat'
+        document.body.appendChild(eat)
         document.onkeydown = this.onKeyDown
+
 
 
     }
@@ -106,7 +111,7 @@ export default class Game extends React.Component {
         this.checkIfEatsFood()
         this.checkIfCollides()
     }
-    changeDirection(newDirection) {
+    changeDirection = (newDirection) => {
 
         this.setState({ direction: newDirection })
     }
@@ -143,7 +148,9 @@ export default class Game extends React.Component {
             let newSnakePoints = [...snakePoints]
             let head = newSnakePoints[newSnakePoints.length - 1]
             let tail = { position: [-16, -16], direction: this.state.direction }
-            eatSound.setVolume(0.2).play()
+            // eatSound.setVolume(0.2).play()
+            var eat = document.getElementById('eat')
+            eat.play()
             newSnakePoints.unshift(tail)
             this.setState({ snakePoints: newSnakePoints })
             this.setState({ foodPosition: generateRandomPosition(this.state.width, this.state.height - 320) })
@@ -155,8 +162,8 @@ export default class Game extends React.Component {
         let newSnakePoints = snakePoints.slice()
         let head = snakePoints[snakePoints.length - 1]
         newSnakePoints.pop()
-        console.log(head.position[0])
-        console.log(newSnakePoints)
+        // console.log(head.position[0])
+        // console.log(newSnakePoints)
         newSnakePoints.forEach(point => {
 
             if (point.position[0] === head.position[0] && point.position[1] == head.position[1]) {
@@ -167,7 +174,7 @@ export default class Game extends React.Component {
     }
     render() {
         const { snakePoints, flipImage, intersections, height, width, foodPosition } = this.state
-
+        const { changeDirection } = this
         return (<div style={{
             height: `${height}px`,
             width: `${width}px`
@@ -179,6 +186,7 @@ export default class Game extends React.Component {
                 foodPosition={foodPosition}
                 height={height}
                 width={width}
+                changeDirection={changeDirection}
             />
             <Control
                 height={height}
